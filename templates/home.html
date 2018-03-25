@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <link type="text/css" rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}"/>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+  <script type="text/javascript">
+   var map;
+   var marker;
+
+   function initialize() {  
+     var mapOptions = {
+       center: new google.maps.LatLng(33.041693,-97.021342),zoom:15};
+     map = new google.maps.Map(document.getElementById("map-canvas"),mapOptions);
+     google.maps.event.addListener(map,'click',function(event) {
+         placeMarker(event.latLng); });
+     placelostpet({{lostpetsdata|safe}});
+     }
+
+   function placelostpet(lostpetsdata) {
+     for(i=0;i<lostpetsdata.length;i++) {
+	     lostpet = new google.maps.Marker( {
+		     position: new google.maps.LatLng(lostpetsdata[i].latitude,lostpetsdata[i].longitude),
+		     map: map,
+		     title: lostpetsdata[i].date+"\n"+lostpetsdata[i].category+"\n"+lostpetsdata[i].description}
+       );
+     }
+   }
+
+   function placeMarker(location) {
+        if (marker) {
+          marker.setPosition(location);
+        }else {
+          marker = new google.maps.Marker({
+          position: location,
+          map: map});
+        }
+      document.getElementById('latitude').value=location.lat();
+      document.getElementById('longitude').value=location.lng();
+     }
+  </script>	
+  <title>Lost Pet Map</title>
+ </head>
+<body onload="initialize()">
+ <h1>Lost Pet Map</h1>
+ <p> This map shows the recent pet lost activity in the North Dallas area.</p>
+ <div id="map-canvas"></div>
+
+ <div id="newlostpetform">
+  <h2>Submit new lost Pet</h2>
+  <form action="/submitlostpet" method="POST">
+   <label for="category">Category</label>
+    <select name="category" id="category">
+     <option value="cat">Cat</option>
+     <option value="dog">Dog</option>
+     <option value="other">Other</option>
+    </select>
+   <label for="date">Date</label>
+   <input name="date" id="date" type="date">
+ 
+   <label for="latitude">Latitude</label>
+   <input name="latitude" id="latitude" type="text">
+
+   <label for="longitude">Longitude</label>
+   <input name="longitude" id="longitude" type="text">
+   <label for="description">Description</label>
+   <textarea name="description" id="description" placeholder="A brief detailed description of the pet"></textarea>
+   <input type="submit" value="Submit" />
+  </form>
+ </div> 
+
+</body>
+</html>
+
