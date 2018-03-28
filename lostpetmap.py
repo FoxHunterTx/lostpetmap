@@ -5,8 +5,10 @@ from flask import request
 import json
 import dbconfig
 import datetime
-import dateparser
-#from dateutil import parser
+#import sys
+#sys.path.insert(0,'pythonlib/dateparser')
+#import dateparser
+from dateutil import parser
 
 
 if dbconfig.test:
@@ -22,7 +24,8 @@ categories_form = ['cat','dog','other']
 
 
 def format_date(userdate):
-    date = dateparser.parse(userdate)
+    #date = dateparser.parse(userdate)
+    date = parser.parse(userdate)
     try:
         return datetime.datetime.strftime(date,"%Y-%m-%d")
     except TypeError:
